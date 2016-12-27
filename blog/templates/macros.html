@@ -1,19 +1,26 @@
-{% macro render_entry(entry) %}
+<!-- Next you'll need to render the entries. Because there are a number of places where you might want to render
+a entry you will separate this code into a Jinja macro -->
+{% macro render_entry(entry) %} <!-- Here you declare a macro called render_entry which takes an entry as a single argument -->
 <div class="row">
     <div class="col-md-2 text-right metadata">
         <ul class="list-unstyled">
             <li>
-                {{ entry.datetime | dateformat("%d/%m/%y") }}
+                {{ entry.datetime | dateformat("%m/%d/%y") }} <!-- When this is called, you render a narrow metadata column containing the entry date -->
             </li>
         </ul>
     </div>
     <div class="col-md-10">
         <h1>
-            {{ entry.title }}
+            {{ entry.title }} <!-- and a wider body column which contains the entry title and content -->
         </h1>
         {{ entry.content | markdown }}
     </div>
 </div>
 {% endmacro %}
+
+<!-- You're using the markdown filter on the entry content. This allows you to use the Markdown syntax, 
+making it simpler to write well-formatted blog entries. You use the dateformat filter to display
+the datetime in mm/dd/yy format. Jinja doesn't include these filters by default 
+so you need to add the filters.py file-->
 
 

@@ -1,18 +1,24 @@
-{% import "macros.html" as macros %}
-{% extends "base.html" %}
-{% block content %}
+<!--  The final step towards viewing the entries is to actually add the entries.html template -->
 
-{% for entry in entries %}
-{{ macros.render_entry(entry) }}
-{% endfor %}
+{% import "macros.html" as macros %} <!--  First you import the macros.html file -->
+{% extends "base.html" %} <!--  Then specify that the template should inherit from base.html -->
+{% block content %} 
 
+{% for entry in entries %}  <!--  Finally in the content block you loop through the entries -->
+{{ macros.render_entry(entry) }} <!--  rendering each one using the render_entry macro -->
+{% endfor %} 
+
+<!--  Adjust your entries.html template to display some buttons which will direct you to the next and previous pages -->
 <ul class="pager">
+<!--  If the has_next variable is true you'll add a link to the next page 
+      using Flask's url_for function to generate the URL for the route -->
     {% if has_next %}
     <li class="previous" >
     <a href="{{ url_for('entries', page=page + 1) }}">&larr; Older</a>
     </li>
     {% endif %}
-    {% if has_prev %}
+<!--  Similarly if the has_prev variable is true you'll render a link to the previous page. -->    
+    {% if has_prev %} 
     <li class="next">
     <a href="{{ url_for('entries', page=page - 1) }}">&rarr; Newer</a>
     </li>
