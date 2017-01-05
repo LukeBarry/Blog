@@ -37,4 +37,6 @@ if __name__ == "__main__":  # Finally in the main block you run the manager
     
 # Try using this script to launch the development server by saying python manage.py run. 
 #  You should see the server launched as usual listening on port 8080.
+
+
     

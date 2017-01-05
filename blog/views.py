@@ -72,11 +72,12 @@ def add_entry_post():
 # Next you add the entry to your session, and commit it to the database. 
 # Finally you use Flask's redirect function to send the user back to the front page once their entry has been created. 
     
-    '''
+'''    
 @app.route("/entry/<id>")
-def single_entry(id):
-    content = session.query(Entry).get(id)
+def single_entry():
+    entry = session.query(Entry).get(id)
     return render_template("add_entry.html")
-       ''' 
-    
+
+       
+   ''' 
     
