@@ -1,12 +1,20 @@
+# Fire up the development server.  Import the flask object and create the app in the usual way.
+# Import the views and Jija filters.  The views and filters imports both make use of the app object,
+# which is why they come after the app object.  Another way to write those two lines import blog.views and import blog.filters
 import os
-from flask import Flask # import the flask object
+from flask import Flask
 
 app = Flask(__name__)
-config_path = os.environ.get("CONFIG_PATH", "blog.config.DevelopmentConfig") # load the configuration
-app.config.from_object(config_path) # you're trying to get an environment variable which will set the path to your configuration object
+config_path = os.environ.get("CONFIG_PATH", "blog.config.DevelopmentConfig")
+app.config.from_object(config_path)
 
-# Notice how these imports come after you create the app rather than at the top of the file as usual. 
-# This is because the views.py and filters.py files will both make use of the app object
+from . import views
+from . import filters
 
-from . import views  # import the (currently non-existent) views and Jinja filters
-from . import filters  # short-hand for import blog.views and import blog.filters
+# After I created the config file, I came back to this file and loaded the configuration.
+# Line 8 is trying to get an environment variable which will set the path to my configuration object.
+# If the variable is not set then I default to my development configuration.
+# This provides a way to switch between configurations easily in defferent situation;
+# I can use this to switch over to a different configuration for testing the application
+# Line 9 uses the app.config.from_object method to configure the app using the configuration object.
+

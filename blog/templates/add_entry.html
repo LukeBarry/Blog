@@ -1,6 +1,10 @@
-<!--  Next you can start to think about how to add new entries without needing to use the command line. 
-The most common way to get user input in web apps is through HTML forms. 
-So let's create a form in a new template called add_entry.html -->
+<!-- There are a couple of things to notice here. The form has the method attribute set to POST. This means that when you submit 
+the form it will send the data via a POST request. As the form element does not have an action attribute the request will be sent 
+to the same URL as you used to GET the form. 
+
+Inside the form you have two fields, one for the title and one for the content. Notice how both of these fields have the name attribute set. 
+You'll use this name to access the contents of the fields. Finally you have a submit button which you will use to submit the form.
+-->
 
 {% extends "base.html" %}
 
@@ -9,26 +13,16 @@ So let's create a form in a new template called add_entry.html -->
     Add Entry
 </h1>
 
-<!--  There are a couple of things to notice here. The form has the method attribute set to POST
-This means that when you submit the form it will send the data via a POST request
-As the form element does not have an action attribute the request will be sent to the same URL as you used to GET the form.
--->
-
-<form role="form" method="POST"> 
-    <div class="form-group"> 
+<form role="form" method="POST">
+    <div class="form-group">
         <label for="title">Title</label>
         <input type="text" class="form-control" id="title" name="title" placeholder="Entry title" required>
     </div>
-    <div class="form-group"> 
+    <div class="form-group">
         <label for="content">Content</label>
         <textarea class="form-control" id="content" name="content" placeholder="Entry content" rows="20" required></textarea>
     </div>
     <button type="submit" class="btn btn-default">Submit</button>
 </form>
-
-<!-- Inside the form you have two fields, one for the title and one for the content
-Notice how both of these fields have the name attribute set. You'll use this name to access the contents of the fields.  
-Finally you have a submit button which you will use to submit the form.
--->
-
 {% endblock %}
+
