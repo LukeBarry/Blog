@@ -40,6 +40,46 @@ def seed():
         session.add(entry)
     session.commit()
         
+
+# Here I ask the user for their name, email address, and their password twice. 
+# I check to make sure that the user is not already stored in the database, and I make sure that the passwords match.
+# Then I create the user object and add it to the database.
+# I use the generate_password_hash function from Werkzeug in order to hash the password.
+# Hashing is a process which converts the plain text password to a string of characters, for example the string 
+# baseball is converted to the hash a2c901c8c6dea98958c219f6f2d038c44dc5d362 using the SHA1 hashing algorithm.
+from getpass import getpass
+from wrkzeug.security import generate_password_hash
+from blog.database import User
+
+@manager.command
+def adduser():
+    name = input("Name: ")
+    email = input("Email: ")
+    if session.query(User).filter_by(email=email).first():
+        print("User with that email address already exists")
+        return
+
+    password = ""
+    password_2 = ""
+    while len(password) < 8 or password != password_2:
+        password = getpass("Password: ")
+        password_2 = getpass("Re-enter password: ")
+    user = User(name=name, email=email,
+                password=generate_password_hash(password))
+    session.add(user)
+    session.commit()
+    
+    
+    
+    
+        
+        
+        
+
+        
+        
+        
+        
 if __name__ == "__main__":
     manager.run()
 

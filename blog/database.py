@@ -34,3 +34,37 @@ class Entry(Base):
 
 Base.metadata.create_all(engine)
 
+
+# Here I create the User model which inherits from the declarative base. 
+# It also inherits from Flask-Login's UserMixin class, which adds a series of default methods. 
+# Flask-Login relies on these default methods to make authentication work.Flask.
+# The model has four columns: an integer id, a name, a unique email address which you will use to identify the user, and a password.
+from flask.ext.login import UserMixin
+
+class User(Base, UserMixin):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(128))
+    email = Column(String(128), unique=True)
+    password = Column(String(128))
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
