@@ -48,7 +48,7 @@ def seed():
 # Hashing is a process which converts the plain text password to a string of characters, for example the string 
 # baseball is converted to the hash a2c901c8c6dea98958c219f6f2d038c44dc5d362 using the SHA1 hashing algorithm.
 from getpass import getpass
-from wrkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash
 from blog.database import User
 
 @manager.command

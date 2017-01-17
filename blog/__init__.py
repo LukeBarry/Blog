@@ -10,6 +10,8 @@ app.config.from_object(config_path)
 
 from . import views
 from . import filters
+from . import login
+
 
 # After I created the config file, I came back to this file and loaded the configuration.
 # Line 8 is trying to get an environment variable which will set the path to my configuration object.

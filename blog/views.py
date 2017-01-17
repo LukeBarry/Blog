@@ -71,7 +71,11 @@ def entries(page=1):
 # Notice how you use the methods=["GET"] parameter in the route decorator. This specifies that the route will only be used for GET requests
 # to the page; you will have to add a new view for the POST request which takes place when you submit the form.  
 # Try visiting the /entry/add page of your app. You should see the form for adding an entry
+
+from flask.ext.login import login_required
+
 @app.route("/entry/add", methods=["GET"])
+@login_required
 def add_entry_get():
     return render_template("add_entry.html")  
 
@@ -86,6 +90,7 @@ def add_entry_get():
 from flask import request, redirect, url_for
 
 @app.route("/entry/add", methods=["POST"])
+@login_required
 def add_entry_post():
     entry = Entry(
         title=request.form["title"],
@@ -125,36 +130,46 @@ def delete_entry_post(id):
     session.commit()
     return redirect(url_for("entries"))     
     
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template("login.html")
+
+# Here you read the email address and password which the user entered from the request.form dictionary. 
+# Next you query to find the user object with the matching email address. You check that the user exists, 
+# and use Werkzeug's check_password_hash function to compare the password the user entered with the hash stored in the database.
+
+# If the username or password is incorrect you use Flask's flash function to store a message which you can use when you render the next page. 
+# In the next section you will look at how to display these messages to the user. You then redirect the user back to the login page.
+
+# If the username and password are correct then you call Flask-Login's login_user function. This sends a cookie (a small chunk of data)
+# to the user's browser which is used to identify the user. When the user then tries to access a protected resource, 
+# Flask-Login will make sure that they have the cookie set and are allowed to access the resource.
+
+# Finally when the user is logged in you redirect the user. Normally you redirect the user to the entries page. 
+# However if there is a next parameter in the URL's query string then you redirect to that address. 
+# Flask-Login uses this so that the user can access the intended resource after logging in.
+
+# For example imagine that the /entry/add resource requires us to login. 
+# When you visit /entry/add Flask-Login will redirect you to /login?next=/entry/add. 
+# You then log in, and the view will read the next parameter and send us on to /entry/add, complying with the initial request.    
+from flask import flash
+from flask.ext.login import login_user
+from werkzeug.security import check_password_hash
+from .database import User
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    email = request.form["email"]
+    password = request.form["password"]
+    user = session.query(User).filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):
+        flash("Incorrect username or password", "danger")
+        return redirect(url_for("login_get"))
+
+    login_user(user)
+    return redirect(request.args.get('next') or url_for("entries"))
     
-'''
-PAGINATE_BY = 10
 
-@app.route("/")
-@app.route("/page/<int:page>")
-def entries(page=1):
-    # Zero-indexed page
 
-    
-    page_index = page - 1
+from flask.ext.login import login_required
 
-    count = session.query(Entry).count()
-
-    start = page_index * PAGINATE_BY
-    end = start + PAGINATE_BY
-
-    total_pages = (count - 1) // PAGINATE_BY + 1
-    has_next = page_index < total_pages - 1
-    has_prev = page_index > 0
-
-    entries = session.query(Entry)
-    entries = entries.order_by(Entry.datetime.desc())
-    entries = entries[start:end]
-
-    return render_template("entries.html",
-        entries=entries,
-        has_next=has_next,
-        has_prev=has_prev,
-        page=page,
-        total_pages=total_pages
-    )
-'''

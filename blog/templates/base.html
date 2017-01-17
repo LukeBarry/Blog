@@ -41,7 +41,18 @@
                 </div>
             </div>
         </div>
-
+        <!-- Here you call the get_flashed_messages function, telling it to also give categories with the messages. 
+        The categories allow us to classify the severity of messages; you might remember that earlier you told Flask-Login
+        to give you messages with the category set to danger. You then loop through the messages, creating a new alert for each one. -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
         <div class="container">
             {% block content %}{% endblock %}
         </div>
