@@ -72,12 +72,21 @@ def entries(page=1):
 # to the page; you will have to add a new view for the POST request which takes place when you submit the form.  
 # Try visiting the /entry/add page of your app. You should see the form for adding an entry
 
+@app.route("/entry/<id>")
+def single_entry(id):
+    entry = session.query(Entry).get(id) # query will always take a class of the table your searching through
+    return render_template("single.html", entry=entry)
+
+
 from flask.ext.login import login_required
 
 @app.route("/entry/add", methods=["GET"])
 #@login_required
-def add_entry_get():
-    return render_template("add_entry.html")  
+def add_entry_get(): 
+    if (current_user.is_authenticated): 
+        return render_template("add_entry.html")
+    else: 
+        return redirect(url_for("login_get"))
 
 # Add a new route which will take your form data and create the new entry.   
 # Here you create an similar route to your add_entry_get view, except this one only accepts POST requests. 
@@ -102,16 +111,18 @@ def add_entry_post():
     session.commit()
     return redirect(url_for("entries"))
 
-@app.route("/entry/<id>")
-def single_entry(id):
-    entry = session.query(Entry).get(id) # query will always take a class of the table your searching through
-    return render_template("single.html", entry=entry)
     
 @app.route("/entry/<id>/edit", methods = ["GET"])
 #@login_required
 def edit_entry_get(id):
     entry = session.query(Entry).get(id)
-    return render_template("edit_entry.html", entry=entry)  
+    if (current_user.is_authenticated and current_user == entry.author): 
+        return render_template("edit_entry.html", entry=entry)
+    elif (current_user.is_authenticated and current_user != entry.author):
+        flash("You do not have permission to edit this post", "danger")
+        return redirect(url_for("entries"))
+    else: 
+        return redirect(url_for("login_get"))
 
 @app.route("/entry/<id>/edit", methods = ["POST"])
 @login_required
@@ -126,7 +137,13 @@ def edit_entry_post(id):
 #@login_required
 def delete_entry_get(id): 
     entry = session.query(Entry).get(id)
-    return render_template("delete_entry.html", entry=entry)
+    if (current_user.is_authenticated and current_user == entry.author): 
+        return render_template("delete_entry.html", entry=entry)
+    elif (current_user.is_authenticated and current_user != entry.author):
+        flash("You do not have permission to edit this post", "danger")
+        return redirect(url_for("entries"))
+    else: 
+        return redirect(url_for("login_get"))
 
 @app.route("/entry/<id>/delete", methods = ["POST"])
 @login_required
@@ -162,6 +179,7 @@ from flask import flash
 from flask.ext.login import login_user
 from werkzeug.security import check_password_hash
 from .database import User
+from flask.ext.login import logout_user
 
 @app.route("/login", methods=["POST"])
 def login_post():
@@ -175,7 +193,11 @@ def login_post():
     login_user(user)
     return redirect(request.args.get('next') or url_for("entries"))
     
+@app.route("/logout")
+def logout(): 
+    logout_user(); 
+    flash('You were logged out')
+    return redirect(url_for("entries"))
 
 
-from flask.ext.login import login_required
 

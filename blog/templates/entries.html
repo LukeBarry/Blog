@@ -6,7 +6,12 @@ I loop through the entries, rendering each one using the render_entry macro
 {% extends "base.html" %}
 {% block content %}
 
-<!-- add jquery to get dorpdown to run -->
+<!-- login, logout, add enrty buttons -->
+<a href="{{ url_for('login_get') }}" class="btn btn-info login" role="button">Login</a>
+<a href="{{ url_for('logout') }}" class="btn btn-info logout" role="button">Logout</a>
+<a href="{{ url_for('add_entry_get') }}" class="btn btn-info add-entry" role="button">Add Entry</a>
+
+<!-- entries per page dropdown button -->
 <div align="right">
     <h6>Entries per page:</h6>
     <div class="btn-group">
@@ -33,9 +38,6 @@ I loop through the entries, rendering each one using the render_entry macro
 <!-- If the has_next variable is true you'll add a link to the next page using Flask's url_for function to generate the URL for the route. 
 Similarly if the has_prev variable is true you'll render a link to the previous page.
 -->
-
- 
-
 
 <ul class="pager">
     {% if has_next %}
