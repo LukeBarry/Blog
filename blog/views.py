@@ -75,7 +75,7 @@ def entries(page=1):
 from flask.ext.login import login_required
 
 @app.route("/entry/add", methods=["GET"])
-@login_required
+#@login_required
 def add_entry_get():
     return render_template("add_entry.html")  
 
@@ -88,6 +88,7 @@ def add_entry_get():
 # Finally you use Flask's redirect function to send the user back to the front page once their entry has been created.
 # Visit the /entry/add page and submit a new entry
 from flask import request, redirect, url_for
+from flask.ext.login import current_user
 
 @app.route("/entry/add", methods=["POST"])
 @login_required
@@ -95,6 +96,7 @@ def add_entry_post():
     entry = Entry(
         title=request.form["title"],
         content=request.form["content"],
+        author=current_user # Here you use the current_user variable from Flask-Login to set the author attribute when you create the entry
     )
     session.add(entry)
     session.commit()
@@ -106,11 +108,13 @@ def single_entry(id):
     return render_template("single.html", entry=entry)
     
 @app.route("/entry/<id>/edit", methods = ["GET"])
+#@login_required
 def edit_entry_get(id):
     entry = session.query(Entry).get(id)
     return render_template("edit_entry.html", entry=entry)  
 
 @app.route("/entry/<id>/edit", methods = ["POST"])
+@login_required
 def edit_entry_post(id):
     entry = session.query(Entry).get(id)
     entry.title=request.form["title"]
@@ -119,11 +123,13 @@ def edit_entry_post(id):
     return redirect(url_for("entries"))   
 
 @app.route("/entry/<id>/delete", methods = ["GET"])
+#@login_required
 def delete_entry_get(id): 
     entry = session.query(Entry).get(id)
     return render_template("delete_entry.html", entry=entry)
 
 @app.route("/entry/<id>/delete", methods = ["POST"])
+@login_required
 def delete_entry_post(id): 
     entry = session.query(Entry).get(id)
     session.delete(entry)

@@ -24,6 +24,11 @@ session = Session()
 import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime
 
+# Here you've added a one-to-many relationship between the User model and the Entry model. 
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+
+
 class Entry(Base):
     __tablename__ = "entries"
 
@@ -31,9 +36,8 @@ class Entry(Base):
     title = Column(String(1024))
     content = Column(Text)
     datetime = Column(DateTime, default=datetime.datetime.now)
-
-Base.metadata.create_all(engine)
-
+    author_id = Column(Integer, ForeignKey('users.id'))
+    
 
 # Here I create the User model which inherits from the declarative base. 
 # It also inherits from Flask-Login's UserMixin class, which adds a series of default methods. 
@@ -48,8 +52,10 @@ class User(Base, UserMixin):
     name = Column(String(128))
     email = Column(String(128), unique=True)
     password = Column(String(128))
+    entries = relationship("Entry", backref="author")
     
-
+    
+Base.metadata.create_all(engine)
 
 
 

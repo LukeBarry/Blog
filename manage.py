@@ -64,17 +64,24 @@ def adduser():
     while len(password) < 8 or password != password_2:
         password = getpass("Password: ")
         password_2 = getpass("Re-enter password: ")
-    user = User(name=name, email=email,
-                password=generate_password_hash(password))
+    user = User(name=name, email=email, password=generate_password_hash(password))
     session.add(user)
     session.commit()
     
-    
-    
-    
-        
-        
-        
+# Here you create a new class called DB which is designed to hold your metadata object. 
+# Alembic uses the metadata to work out what the changes to the database schema should be. 
+# You then create an instance of Flask-Migrate's Migrate class, passing in the app and an instance of the DB class. 
+# Finally you use the add_command to add all of the commands held in the Migrate class to the management script.    
+from flask.ext.migrate import Migrate, MigrateCommand
+from blog.database import Base
+
+class DB(object):
+    def __init__(self, metadata):
+        self.metadata = metadata
+
+migrate = Migrate(app, DB(Base.metadata))
+manager.add_command('db', MigrateCommand)
+
 
         
         
