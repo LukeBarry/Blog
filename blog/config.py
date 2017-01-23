@@ -16,6 +16,10 @@ class TestingConfig(object):
     DEBUG = False
     SECRET_KEY = "Not secret"
     
+class TravisConfig(object):
+    SQLALCHEMY_DATABASE_URI = "postgresql://localhost:5432/blogful-test"
+    DEBUG = False
+    SECRET_KEY = "Not secret"    
 
 # The secret_key is used to cryptographically secure my application's sessions. However, it's not a good idea to store
 # your application's secret key inside the application configuration itself. Therefore, I use os.environ.get to obtain 
